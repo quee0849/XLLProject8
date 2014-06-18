@@ -314,3 +314,94 @@ CellMatrix MCVanillaDeltaLR(const CellMatrix& parametersMatrix, unsigned long se
 }
 
 
+CellMatrix MCAsianCall(const CellMatrix& parametersMatrix) {
+	// check selected area has the correct size
+	if ( parametersMatrix.ColumnsInStructure() < 8  || parametersMatrix.ColumnsInStructure() > 9 ||
+		parametersMatrix.RowsInStructure() !=1 )
+	{
+		throw("Input matrix should be 1 x 8 or 1x9");
+	}
+	double Spot =  parametersMatrix(0,0).NumericValue();
+	double r =  parametersMatrix(0,1).NumericValue();
+	double d =  parametersMatrix(0,2).NumericValue();
+	double vol =  parametersMatrix(0,3).NumericValue();
+	double expiry = parametersMatrix(0,4).NumericValue(); 
+	unsigned long NumberOfDates = parametersMatrix(0,5).NumericValue();
+	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+	double Strike[2];
+	Strike[0] = parametersMatrix(0,7).NumericValue();
+	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
+	Strike[1] = (parametersMatrix.ColumnsInStructure()==9) ? 
+		parametersMatrix(0,8).NumericValue() : 110;
+	
+	PayOffCall thePayOff(Strike);
+
+    MJArray times(NumberOfDates);
+
+    for (unsigned long i=0; i < NumberOfDates; i++)
+        times[i] = (i+1.0)*expiry/NumberOfDates;
+
+    ParametersConstant VolParam(vol);
+    ParametersConstant rParam(r);
+    ParametersConstant dParam(d);
+    PathDependentAsian theOption(times, expiry, thePayOff);
+    StatisticsMean gatherer;
+
+    RandomParkMiller generator(NumberOfDates);
+    
+    AntiThetic GenTwo(generator);
+
+    ExoticBSEngine theEngine(theOption, rParam, dParam, VolParam, GenTwo, Spot);
+
+    theEngine.DoSimulation(gatherer, NumberOfPaths);
+  
+	CellMatrix resultMatrix(1,1); 
+		resultMatrix(0,0) = (gatherer.GetResultsSoFar()[0][0]);
+	return resultMatrix;
+}
+
+
+CellMatrix MCDeltaHedge(const CellMatrix& parametersMatrix) {
+	// check selected area has the correct size
+	if ( parametersMatrix.ColumnsInStructure() < 8  || parametersMatrix.ColumnsInStructure() > 9 ||
+		parametersMatrix.RowsInStructure() !=1 )
+	{
+		throw("Input matrix should be 1 x 8 or 1x9");
+	}
+	double Spot =  parametersMatrix(0,0).NumericValue();
+	double r =  parametersMatrix(0,1).NumericValue();
+	double d =  parametersMatrix(0,2).NumericValue();
+	double vol =  parametersMatrix(0,3).NumericValue();
+	double expiry = parametersMatrix(0,4).NumericValue(); 
+	unsigned long NumberOfDates = parametersMatrix(0,5).NumericValue();
+	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+	double Strike[2];
+	Strike[0] = parametersMatrix(0,7).NumericValue();
+	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
+	Strike[1] = (parametersMatrix.ColumnsInStructure()==9) ? 
+		parametersMatrix(0,8).NumericValue() : 110;
+	
+	PayOffCall thePayOff(Strike);
+
+    MJArray times(NumberOfDates);
+
+    for (unsigned long i=0; i < NumberOfDates; i++)
+        times[i] = (i+1.0)*expiry/NumberOfDates;
+
+    ParametersConstant VolParam(vol);
+    ParametersConstant rParam(r);
+    ParametersConstant dParam(d);
+	// using my path dependent delta hedge class to simulate delta hedging.
+    PathDependentDeltaHedge theOption(times, expiry, thePayOff);
+    StatisticsMean gatherer;
+    RandomParkMiller generator(NumberOfDates);
+    AntiThetic GenTwo(generator);
+    ExoticBSEngine theEngine(theOption, rParam, dParam, VolParam, GenTwo, Spot);
+    theEngine.DoSimulation(gatherer, NumberOfPaths);
+  
+	CellMatrix resultMatrix(1,1); 
+		resultMatrix(0,0) = (gatherer.GetResultsSoFar()[0][0]);
+	return resultMatrix;
+}
+
+

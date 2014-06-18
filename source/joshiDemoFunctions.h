@@ -21,6 +21,8 @@
 #include <ParkMiller.h>
 #include <vector>
 #include <PayOffFactory.h>
+#include <PathDependentAsian.h>
+#include <ExoticBSEngine.h>
 //#include <PayOffRegistration.h>
 
 
@@ -59,9 +61,17 @@ CellMatrix // Return the Delta of a vanilla call using pathwise method - make su
 //<xlw:time
 MCVanillaDeltaCall(const CellMatrix& parametersMatrix);
 
-CellMatrix // Return the price, variance and std eke
+CellMatrix // Return the Delta of a vanilla call using likelihood ratio method 
 //<xlw:time
 MCVanillaDeltaLR(const CellMatrix& parametersMatrix, unsigned long seed);
+
+CellMatrix // Return the price of an asian call option given spot, r, d, vol, expiry, numDates, numPaths, Strike
+//<xlw:time
+MCAsianCall(const CellMatrix& parametersMatrix);
+
+CellMatrix // Return the price of an asian call option given spot, r, d, vol, expiry, numDatesToHedge, numPaths, Strike
+//<xlw:time
+MCDeltaHedge(const CellMatrix& parametersMatrix);
 
 
 #endif

@@ -511,7 +511,7 @@ MCVanillaDeltaLRArgs[]=
   XLRegistration::XLFunctionRegistrationHelper
 registerMCVanillaDeltaLR("xlMCVanillaDeltaLR",
 "MCVanillaDeltaLR",
-" Return the price, variance and std eke ",
+" Return the Delta of a vanilla call using likelihood ratio method ",
 LibraryName,
 MCVanillaDeltaLRArgs,
 2
@@ -552,6 +552,128 @@ CellMatrix result(
 	MCVanillaDeltaLR(
 		parametersMatrix,
 		seed)
+	);
+CellMatrix resultCells(result);
+CellMatrix time(1,2);
+time(0,0) = "time taken";
+time(0,1) = t.elapsed();
+resultCells.PushBottom(time);
+return XlfOper(resultCells);
+EXCEL_END
+}
+}
+
+
+
+//////////////////////////
+
+namespace
+{
+XLRegistration::Arg
+MCAsianCallArgs[]=
+{
+{ "parametersMatrix","too lazy to comment this one ","XLF_OPER"}
+};
+  XLRegistration::XLFunctionRegistrationHelper
+registerMCAsianCall("xlMCAsianCall",
+"MCAsianCall",
+" Return the price of an asian call option given spot, r, d, vol, expiry, numDates, numPaths, Strike ",
+LibraryName,
+MCAsianCallArgs,
+1
+,false
+,false
+,""
+,""
+,false
+,false
+,false
+);
+}
+
+
+
+extern "C"
+{
+LPXLFOPER EXCEL_EXPORT
+xlMCAsianCall(
+LPXLFOPER parametersMatrixa)
+{
+EXCEL_BEGIN;
+
+	if (XlfExcel::Instance().IsCalledByFuncWiz())
+		return XlfOper(true);
+
+XlfOper parametersMatrixb(
+	(parametersMatrixa));
+CellMatrix parametersMatrix(
+	parametersMatrixb.AsCellMatrix("parametersMatrix"));
+
+ HiResTimer t;
+CellMatrix result(
+	MCAsianCall(
+		parametersMatrix)
+	);
+CellMatrix resultCells(result);
+CellMatrix time(1,2);
+time(0,0) = "time taken";
+time(0,1) = t.elapsed();
+resultCells.PushBottom(time);
+return XlfOper(resultCells);
+EXCEL_END
+}
+}
+
+
+
+//////////////////////////
+
+namespace
+{
+XLRegistration::Arg
+MCDeltaHedgeArgs[]=
+{
+{ "parametersMatrix","too lazy to comment this one ","XLF_OPER"}
+};
+  XLRegistration::XLFunctionRegistrationHelper
+registerMCDeltaHedge("xlMCDeltaHedge",
+"MCDeltaHedge",
+" Return the price of an asian call option given spot, r, d, vol, expiry, numDatesToHedge, numPaths, Strike ",
+LibraryName,
+MCDeltaHedgeArgs,
+1
+,false
+,false
+,""
+,""
+,false
+,false
+,false
+);
+}
+
+
+
+extern "C"
+{
+LPXLFOPER EXCEL_EXPORT
+xlMCDeltaHedge(
+LPXLFOPER parametersMatrixa)
+{
+EXCEL_BEGIN;
+
+	if (XlfExcel::Instance().IsCalledByFuncWiz())
+		return XlfOper(true);
+
+XlfOper parametersMatrixb(
+	(parametersMatrixa));
+CellMatrix parametersMatrix(
+	parametersMatrixb.AsCellMatrix("parametersMatrix"));
+
+ HiResTimer t;
+CellMatrix result(
+	MCDeltaHedge(
+		parametersMatrix)
 	);
 CellMatrix resultCells(result);
 CellMatrix time(1,2);

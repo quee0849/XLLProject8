@@ -404,6 +404,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Downloads\DesignCPP\include\ExoticBSEngine.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Downloads\DesignCPP\include\ExoticEngine.h"
+				>
+			</File>
+			<File
 				RelativePath=".\source\joshiDemoFunctions.h"
 				>
 			</File>
@@ -433,6 +441,14 @@
 			</File>
 			<File
 				RelativePath="..\..\Downloads\DesignCPP\include\ParkMiller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Downloads\DesignCPP\include\PathDependent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Downloads\DesignCPP\include\PathDependentAsian.h"
 				>
 			</File>
 			<File
@@ -504,6 +520,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Downloads\DesignCPP\source\ExoticBSEngine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Downloads\DesignCPP\source\ExoticEngine.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\source\joshiDemoFunctions.cpp"
 				>
 			</File>
@@ -525,6 +549,14 @@
 			</File>
 			<File
 				RelativePath="..\..\Downloads\DesignCPP\source\ParkMiller.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Downloads\DesignCPP\source\PathDependent.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Downloads\DesignCPP\source\PathDependentAsian.cpp"
 				>
 			</File>
 			<File
