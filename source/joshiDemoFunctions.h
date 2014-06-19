@@ -35,6 +35,10 @@ short // echoes a short
 EchoShort(short x // number to be echoed
        );
 
+short // echoes a short
+EchoShortShort(short x // number to be echoed
+       );
+
 MyMatrix // adds two matrices together after checking they're the same size.
 AddMatrix(const MyMatrix& matrixA, const MyMatrix& matrixB);
 

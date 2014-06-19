@@ -80,6 +80,61 @@ EXCEL_END
 namespace
 {
 XLRegistration::Arg
+EchoShortShortArgs[]=
+{
+{ "x"," number to be echoed ","XLF_OPER"}
+};
+  XLRegistration::XLFunctionRegistrationHelper
+registerEchoShortShort("xlEchoShortShort",
+"EchoShortShort",
+" echoes a short ",
+LibraryName,
+EchoShortShortArgs,
+1
+,false
+,false
+,""
+,""
+,false
+,false
+,false
+);
+}
+
+
+
+extern "C"
+{
+LPXLFOPER EXCEL_EXPORT
+xlEchoShortShort(
+LPXLFOPER xa)
+{
+EXCEL_BEGIN;
+
+	if (XlfExcel::Instance().IsCalledByFuncWiz())
+		return XlfOper(true);
+
+XlfOper xb(
+	(xa));
+short x(
+	xb.AsShort("x"));
+
+short result(
+	EchoShortShort(
+		x)
+	);
+return XlfOper(result);
+EXCEL_END
+}
+}
+
+
+
+//////////////////////////
+
+namespace
+{
+XLRegistration::Arg
 AddMatrixArgs[]=
 {
 { "matrixA","too lazy to comment this one ","XLF_OPER"},

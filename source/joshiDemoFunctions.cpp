@@ -10,6 +10,13 @@ EchoShort(short x // number to be echoed
     return x;
 }
 
+short // echoes a short
+EchoShortShort(short x // number to be echoed
+           )
+{
+    return x;
+}
+
 MyMatrix // adds two matrices together after checking they're the same size.
 AddMatrix(const MyMatrix& matrixA, const MyMatrix& matrixB) {
 
@@ -38,7 +45,7 @@ MCVanillaCall(const MyMatrix& parametersMatrix) {
 	double d =  parametersMatrix(0,3);
 	double vol =  parametersMatrix(0,4);
 	double expiry = parametersMatrix(0,5); 
-	unsigned long NumberOfPaths = parametersMatrix(0,6);
+	unsigned long NumberOfPaths = (unsigned long) parametersMatrix(0,6);
 
     PayOffCall thePayOff(Strike);
 
@@ -81,7 +88,7 @@ CellMatrix MCVanillaChoice3(const CellMatrix& parametersMatrix, unsigned long se
 	double vol =  parametersMatrix(0,3).NumericValue();
 	double expiry = parametersMatrix(0,4).NumericValue(); 
 	std::string name = parametersMatrix(0,5).StringValue();
-	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+	unsigned long NumberOfPaths =(unsigned long) parametersMatrix(0,6).NumericValue();
 	double Strike[2];
 	Strike[0] = parametersMatrix(0,7).NumericValue();
 	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
@@ -139,7 +146,7 @@ CellMatrix MCVanillaChoiceConvergenceTable(const CellMatrix& parametersMatrix) {
 	double vol =  parametersMatrix(0,3).NumericValue();
 	double expiry = parametersMatrix(0,4).NumericValue(); 
 	std::string name = parametersMatrix(0,5).StringValue();
-	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+	unsigned long NumberOfPaths =(unsigned long) parametersMatrix(0,6).NumericValue();
 	double Strike[2];
 	Strike[0] = parametersMatrix(0,7).NumericValue();
 	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
@@ -169,7 +176,7 @@ CellMatrix MCVanillaChoiceConvergenceTable(const CellMatrix& parametersMatrix) {
         delete PayOffPtr;
 		std::vector< std::vector<double>> resultsVector = gathererTwo.GetResultsSoFar();
 		CellMatrix resultMatrix(resultsVector.size(),2); 
-		for (int i=0; i<resultsVector.size(); i++ ) {
+		for (size_t i=0; i<resultsVector.size(); i++ ) {
 		resultMatrix(i,0) = resultsVector[i][1];
 		resultMatrix(i,1) = resultsVector[i][0]; 
 		}
@@ -196,8 +203,8 @@ CellMatrix MCVanillaChoiceEulerStepping(const CellMatrix& parametersMatrix) {
 	double vol =  parametersMatrix(0,3).NumericValue();
 	double expiry = parametersMatrix(0,4).NumericValue(); 
 	std::string name = parametersMatrix(0,5).StringValue();
-	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
-	unsigned long NumberOfSteps = parametersMatrix(0,7).NumericValue();
+	unsigned long NumberOfPaths = (unsigned long) parametersMatrix(0,6).NumericValue();
+	unsigned long NumberOfSteps = (unsigned long) parametersMatrix(0,7).NumericValue();
 	double Strike[2];
 	Strike[0] = parametersMatrix(0,8).NumericValue();
 	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
@@ -271,7 +278,7 @@ CellMatrix MCVanillaDeltaLR(const CellMatrix& parametersMatrix, unsigned long se
 	double vol =  parametersMatrix(0,3).NumericValue();
 	double expiry = parametersMatrix(0,4).NumericValue(); 
 	std::string name = parametersMatrix(0,5).StringValue();
-	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+	unsigned long NumberOfPaths = (unsigned long) parametersMatrix(0,6).NumericValue();
 	double Strike[2];
 	Strike[0] = parametersMatrix(0,7).NumericValue();
 	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
@@ -326,8 +333,8 @@ CellMatrix MCAsianCall(const CellMatrix& parametersMatrix) {
 	double d =  parametersMatrix(0,2).NumericValue();
 	double vol =  parametersMatrix(0,3).NumericValue();
 	double expiry = parametersMatrix(0,4).NumericValue(); 
-	unsigned long NumberOfDates = parametersMatrix(0,5).NumericValue();
-	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+	unsigned long NumberOfDates = (unsigned long) parametersMatrix(0,5).NumericValue();
+	unsigned long NumberOfPaths = (unsigned long) parametersMatrix(0,6).NumericValue();
 	double Strike[2];
 	Strike[0] = parametersMatrix(0,7).NumericValue();
 	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
@@ -373,8 +380,9 @@ CellMatrix MCDeltaHedge(const CellMatrix& parametersMatrix) {
 	double d =  parametersMatrix(0,2).NumericValue();
 	double vol =  parametersMatrix(0,3).NumericValue();
 	double expiry = parametersMatrix(0,4).NumericValue(); 
-	unsigned long NumberOfDates = parametersMatrix(0,5).NumericValue();
-	unsigned long NumberOfPaths = parametersMatrix(0,6).NumericValue();
+
+	unsigned long NumberOfDates = (unsigned long) parametersMatrix(0,5).NumericValue();
+	unsigned long NumberOfPaths = (unsigned long) parametersMatrix(0,6).NumericValue();
 	double Strike[2];
 	Strike[0] = parametersMatrix(0,7).NumericValue();
 	// extra value for double digital - can't use an if statement as Strike[1] goes out of scope
@@ -392,15 +400,16 @@ CellMatrix MCDeltaHedge(const CellMatrix& parametersMatrix) {
     ParametersConstant rParam(r);
     ParametersConstant dParam(d);
 	// using my path dependent delta hedge class to simulate delta hedging.
-    PathDependentDeltaHedge theOption(times, expiry, thePayOff);
+    PathDependentDeltaHedge theOption(times, r,d, vol, expiry, Strike[0], thePayOff);
     StatisticsMean gatherer;
     RandomParkMiller generator(NumberOfDates);
-    AntiThetic GenTwo(generator);
-    ExoticBSEngine theEngine(theOption, rParam, dParam, VolParam, GenTwo, Spot);
+    //AntiThetic GenTwo(generator);
+    ExoticBSEngine theEngine(theOption, rParam, dParam, VolParam, generator, Spot);
     theEngine.DoSimulation(gatherer, NumberOfPaths);
   
 	CellMatrix resultMatrix(1,1); 
 		resultMatrix(0,0) = (gatherer.GetResultsSoFar()[0][0]);
+		//resultMatrix(0,1) = (gatherer.GetResultsSoFar()[0][1]);
 	return resultMatrix;
 }
 

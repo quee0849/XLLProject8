@@ -612,6 +612,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\HedgeSimulation.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\HedgeSimulation.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
